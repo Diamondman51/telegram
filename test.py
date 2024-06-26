@@ -181,8 +181,9 @@ import errno
 
 HEADER_LENGTH = 10
 
-IP = "127.0.0.1"
+IP = "localhost"
 PORT = 1234
+
 
 def send_messages(client_socket):
     """Handles sending messages to the server."""
