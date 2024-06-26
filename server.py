@@ -25,7 +25,6 @@ def receive_message(client_socket):
     try:
         message_header = client_socket.recv(HEADER_LENGTH)
 
-
         if not len(message_header):
             return False
 
@@ -38,13 +37,17 @@ def receive_message(client_socket):
 
 while True:
     read_socket, _, exception_socket = select.select(sockets_list, [], sockets_list)
+    print('server')
 
     for notified_socket in read_socket:
+        print(notified_socket == server_socket)
         if notified_socket == server_socket:
             client_socket, client_address = server_socket.accept()
+            print(client_socket)
 
             # Birinchi bo'lib ismni jonatish kera jonatadigan socketdan
             user = receive_message(client_socket)
+            print(user)
 
             if user is False:
                 continue
@@ -64,14 +67,12 @@ while True:
             user = clients[notified_socket]
 
             for client_socket in clients:
-                if client_socket != notified_socket:
-                    client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
-
+                print('send_to client')
+                # if client_socket != notified_socket:
+                # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+                client_socket.send(message['header'] + message['data'])
+                print(f'{client_socket}, {message["header"]} + {message["data"]}')
 
     for notified_socket in exception_socket:
         sockets_list.remove(notified_socket)
         del clients[notified_socket]
-
-
-
-
