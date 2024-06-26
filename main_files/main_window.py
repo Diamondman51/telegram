@@ -20,8 +20,8 @@ class Main_Window(Ui_Form, QWidget):
         message_widget = Message()
 
         if self.message_lineEdit:
-            message = message_widget.message_label.setText(self.message_lineEdit.text())
-            username = message_widget.username_label.setText(self.username_LineEdit.text())
+            message = self.message_lineEdit.text()
+            username = self.username_LineEdit.text()
 
             message_widget.message_label.setText(message)
             message_widget.username_label.setText(username)
