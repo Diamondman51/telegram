@@ -12,7 +12,8 @@ class Login_page(Ui_Dialog, QDialog):
 
     def button_clicked(self):
         self.text = self.user_name_lineEdit.text()
-        self.accept()
+        if self.text:
+            self.accept()
 
     def sign_up_page(self):
         self.stackedWidget.setCurrentIndex(1)

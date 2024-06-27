@@ -14,13 +14,13 @@ class Main_Window(Ui_Form, QWidget):
         self.setupUi(self)
         # self.cl_sock = ClientSocket()
         self.data = DataBase()
+        self.data.start()
         self.btn_menu_2.setChecked(True)
         self.btn_send_message.clicked.connect(self.send_message_main)
         self.username_LineEdit.setText('Java')
         # self.cl_sock.received.connect(self.receive_message_main)
         self.data.received.connect(self.receive_message_main)
         # self.cl_sock.start()
-        self.data.start()
 
     def send_message_main(self):
         # print(123)
@@ -28,7 +28,7 @@ class Main_Window(Ui_Form, QWidget):
         message_widget.message_label.setAlignment(Qt.AlignRight)
         message_widget.username_label.setAlignment(Qt.AlignRight)
 
-        if self.message_lineEdit:
+        if self.message_lineEdit.text():
             message = self.message_lineEdit.text()
             username = self.username_LineEdit.text()
 
@@ -47,8 +47,8 @@ class Main_Window(Ui_Form, QWidget):
     def receive_message_main(self, full_message):
         print('full_message', full_message)
         message_widget = Message('left')
-        message_widget.message_label.setAlignment(Qt.AlignLeft)
         message_widget.username_label.setAlignment(Qt.AlignLeft )
+        message_widget.message_label.setAlignment(Qt.AlignLeft)
         message_widget.username_label.setText(full_message[0])
         message_widget.message_label.setText((full_message[1]))
         message_widget.adjust_text_edit_size()
@@ -66,6 +66,8 @@ class Main_Window(Ui_Form, QWidget):
         # item.foreground()
         item = QListWidgetItem()
         item.setText(f'{username} {message}')
+        # item.
         item.setForeground(QColor('white'))
+        item.setBackground(QColor('rgb(92, 157, 255)'))
         item.setTextAlignment(Qt.AlignCenter)
         self.listWidget_for_messages.addItem(item)

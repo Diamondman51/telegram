@@ -47,7 +47,7 @@ while True:
 
             # Birinchi bo'lib ismni jonatish kera jonatadigan socketdan
             user = receive_message(client_socket)
-            print(user)
+            print('user', user, client_socket)
 
             if user is False:
                 continue
@@ -60,6 +60,7 @@ while True:
             message = receive_message(notified_socket)
 
             if message is False:
+                print('Exit')
                 sockets_list.remove(notified_socket)
                 del clients[notified_socket]
                 continue

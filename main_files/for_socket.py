@@ -13,6 +13,10 @@ PORT = 1234
 class DataBase(QThread):
     received = Signal(tuple)
 
+    my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    my_socket.connect((IP, PORT))
+    my_socket.setblocking(True)
+
     def __init__(self, ip=IP, port=PORT):
         super().__init__()
         self.ip = ip
@@ -22,9 +26,6 @@ class DataBase(QThread):
     def run(self):
 
         self.running = True
-        self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.my_socket.connect((self.ip, self.port))
-        self.my_socket.setblocking(True)
 
         while self.running:
             try:
@@ -48,7 +49,7 @@ class DataBase(QThread):
         message_length = int(username_header.decode('utf-8'))
         full_message = self.my_socket.recv(message_length).decode('utf-8')
 
-        print('full_message', full_message)
+        print('full_message', full_message, message_length)
 
         username = full_message.split()[0]
         message = full_message[len(username):]
@@ -56,13 +57,25 @@ class DataBase(QThread):
         self.received.emit((username, message))
         print('signal emited', username, message)
 
-
+    flag = False
     def send_message(self, username: str, message: str):
         print('send_message')
-        if self.running and self.my_socket:
+        if not self.flag:
             try:
-                message = f'{username} {message}'.encode('utf-8')
+                username_message = f'{username}'.encode('utf-8')
+                message_header = f"{len(f'{username_message}'):<{HEADER}}".encode('utf-8')
+                self.my_socket.send(message_header + username_message)
+                print('username_message', username_message)
+                DataBase.flag = True
+            except (OSError, BrokenPipeError) as error:
+                print('Error: ', error)
+                self.running = False
+
+        elif self.flag and message and self.running and self.my_socket:
+            try:
+                message = f'{[username]} {message}'.encode('utf-8')
                 message_header = f"{len(f'{message}'):<{HEADER}}".encode('utf-8')
+                print('my_socket.send(message_header + message)', message_header.decode() + ' ' + message.decode())
                 self.my_socket.send(message_header + message)
             except (OSError, BrokenPipeError) as error:
                 print('Error: ', error)
