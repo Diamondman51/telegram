@@ -15,6 +15,7 @@ class Main_Window(Ui_Form, QWidget):
         data = DataBase(self.username_LineEdit.text(), self)
 
     def send_message_main(self, username, message):
+
         message_widget = Message()
 
         if self.message_lineEdit:

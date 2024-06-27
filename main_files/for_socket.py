@@ -3,6 +3,8 @@ import sqlite3
 import sys
 import threading
 
+from PyQt5.QtCore import QThread
+
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 IP = 'localhost'
@@ -14,7 +16,7 @@ my_socket.setblocking(True)
 HEADER = 10
 
 
-class DataBase:
+class DataBase(QThread):
     def __init__(self, username: str, main_window):
         print(123)
         self.main_window = main_window
@@ -26,6 +28,7 @@ class DataBase:
         self.main_window.btn_send_message.clicked.connect(self.send_m)
         print('end')
 
+        self.send_thread = threading.Thread(target=self.send_message, args=(self.main_window.message_lineEdit.text(),))
         receive_thread = threading.Thread(target=self.receive_message)
 
         receive_thread.start()
@@ -34,6 +37,7 @@ class DataBase:
 
     def send_m(self):
         print(456)
+
         send_thread = threading.Thread(target=self.send_message, args=(self.main_window.message_lineEdit.text(),))
         if self.main_window.message_lineEdit.text():
             self.main_window.send_message_main(self.main_window.username_LineEdit.text(), self.main_window.message_LineEdit.text())
@@ -72,7 +76,7 @@ class DataBase:
         with sqlite3.connect('mydb.db') as db:
             query = '''create table if not exists mydata (
                         username varchar not null
-                        )                
+                        )
                     '''
             db.execute(query)
             db.commit()

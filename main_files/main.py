@@ -5,10 +5,10 @@ from main_files.main_window import Main_Window
 
 app = QApplication()
 
-# login = Login_page()
-# login.show()
+login = Login_page()
+login.show()
 
-main_window = Main_Window()
-main_window.show()
+# main_window = Main_Window()
+# main_window.show()
 
 app.exec()
