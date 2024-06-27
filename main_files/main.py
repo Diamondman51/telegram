@@ -6,9 +6,12 @@ from main_files.main_window import Main_Window
 app = QApplication()
 
 login = Login_page()
-login.show()
-
-# main_window = Main_Window()
-# main_window.show()
+res = login.exec()
+if res == Login_page.Accepted:
+    main_window = Main_Window()
+    main_window.username_LineEdit.setText(login.text)
+    main_window.username_LineEdit.setReadOnly(True)
+    main_window.send_message_login(main_window.username_LineEdit.text(), 'entered to the group')
+    main_window.show()
 
 app.exec()

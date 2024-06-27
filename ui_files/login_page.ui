@@ -34,6 +34,18 @@
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="minimumSize">
@@ -43,10 +55,14 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgba(255, 255, 255, 0);
-</string>
+      <string notr="true">#page, #page_2 {
+	border-image: url(':bg_img2');
+}</string>
      </property>
      <widget class="QWidget" name="page">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="1" column="2">
         <spacer name="horizontalSpacer_4">
@@ -447,7 +463,7 @@ background-color: rgb(255, 255, 255);</string>
   </layout>
  </widget>
  <resources>
-  <include location="../resource_files/res.qrc"/>
+  <include location="../images/res.qrc"/>
  </resources>
  <connections/>
 </ui>
