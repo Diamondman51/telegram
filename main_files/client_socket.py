@@ -1,8 +1,7 @@
 import errno
+import socket
 
 from PySide6.QtCore import QThread, Signal
-
-import socket
 
 HEADER_LENGTH = 10
 IP = "localhost"
@@ -10,14 +9,13 @@ PORT = 1234
 
 
 class ClientSocket(QThread):
+    # received = Signal(list)
     received = Signal(list)
     def __init__(self, ip=IP, port=PORT, parent=None):
         super().__init__()
-        # self.username = username
         self.ip = ip
         self.port = port
         self.running = False
-        # print('init')
 
     # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -28,12 +26,9 @@ class ClientSocket(QThread):
         self.client_socket.connect((self.ip, self.port))
         self.client_socket.setblocking(True)
 
-        # username = self.username.encode('utf-8')
-        # username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
-        # self.client_socket.send(username_header + username)
-
         while self.running:
             try:
+                print('run')
                 self.receive_message()
             except IOError as e:
                 if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
@@ -44,7 +39,9 @@ class ClientSocket(QThread):
                 break
 
     def receive_message(self):
+        print('receive_message activated')
         username_header = self.client_socket.recv(HEADER_LENGTH)
+        print('123')
         if not len(username_header):
             self.running = False
 
@@ -52,8 +49,9 @@ class ClientSocket(QThread):
         full_message = self.client_socket.recv(length).decode('utf-8')
         # print(full_message.split()[0])
         username = full_message.split()[0]
-        print(username)
         message = full_message.split()[1:]
+
+        print('full_message', full_message)
 
         self.received.emit([username, message])
         print(f'username: {username}, message: {message}')

@@ -1,7 +1,9 @@
 <RCC>
   <qresource>
+    <file>tg_bg_img_2.jpg</file>
     <file>bg_img.jpg</file>
     <file>bg_img2.jpg</file>
     <file>menu.png</file>
+    <file>tg_bg_img.jpg</file>
   </qresource>
 </RCC>

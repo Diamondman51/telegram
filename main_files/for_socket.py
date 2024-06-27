@@ -1,72 +1,72 @@
+import errno
 import socket
 import sqlite3
-import sys
-import threading
 
-my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+from PySide6.QtCore import Signal, QThread
 
+HEADER = 10
 IP = 'localhost'
 PORT = 1234
 
-my_socket.connect((IP, PORT))
-my_socket.setblocking(True)
-
-HEADER = 10
 
 
-class DataBase:
-    def __init__(self, username: str, main_window):
-        print(123)
-        self.main_window = main_window
-        self.username = username.encode('utf-8')
-        self.username_length = f"{len(username):<{HEADER}}".encode('utf-8')
-        my_socket.send(self.username_length + self.username)
+class DataBase(QThread):
+    received = Signal(tuple)
 
-        print('st')
-        self.main_window.btn_send_message.clicked.connect(self.send_m)
-        print('end')
+    def __init__(self, ip=IP, port=PORT):
+        super().__init__()
+        self.ip = ip
+        self.port = port
+        self.running = False
 
-        receive_thread = threading.Thread(target=self.receive_message)
+    def run(self):
 
-        receive_thread.start()
-        receive_thread.join()
-        my_socket.close()
+        self.running = True
+        self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.my_socket.connect((self.ip, self.port))
+        self.my_socket.setblocking(True)
 
-    def send_m(self):
-        print(456)
-        send_thread = threading.Thread(target=self.send_message, args=(self.main_window.message_lineEdit.text(),))
-        if self.main_window.message_lineEdit.text():
-            self.main_window.send_message_main(self.main_window.username_LineEdit.text(), self.main_window.message_LineEdit.text())
-            print(self.main_window.username_LineEdit.text(), self.main_window.message_LineEdit.text())
-        send_thread.start()
-        send_thread.join()
+        while self.running:
+            try:
+                print('run')
+                self.receive_message()
+            except IOError as e:
+                if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
+                    print('reading error')
+                    break
+            except Exception as e:
+                print('General error', e)
+                break
 
     def receive_message(self):
-        while True:
-            username_header = my_socket.recv(HEADER)
-            if not len(username_header):
-                sys.exit()
+        print('receive_message')
+        username_header = self.my_socket.recv(HEADER)
+        print(123)
+        if not len(username_header):
+            self.running = False
 
-            username_length = int(username_header.decode('utf-8'))
-            username = my_socket.recv(username_length).decode('utf-8')
+        message_length = int(username_header.decode('utf-8'))
+        full_message = self.my_socket.recv(message_length).decode('utf-8')
 
-            message_header = my_socket.recv(HEADER)
-            message_length = int(message_header.decode('utf-8'))
-            message = my_socket.recv(message_length).decode('utf-8')
+        print('full_message', full_message)
 
-            if self.main_window.message_lineEdit:
-                self.main_window.send_message_main(username, message)
-            # return username, message
+        username = full_message.split()[0]
+        message = full_message[len(username):]
 
-    def send_message(self, message):
-        while True:
+        self.received.emit((username, message))
+        print('signal emited', username, message)
+
+
+    def send_message(self, username: str, message: str):
+        print('send_message')
+        if self.running and self.my_socket:
             try:
-                if message:
-                    message = message.encode('utf-8')
-                    message_header = f"{len(message):<{HEADER}}".encode('utf-8')
-                    my_socket.send(message_header + message)
-            except (OSError, BrokenPipeError):
-                break
+                message = f'{username} {message}'.encode('utf-8')
+                message_header = f"{len(f'{message}'):<{HEADER}}".encode('utf-8')
+                self.my_socket.send(message_header + message)
+            except (OSError, BrokenPipeError) as error:
+                print('Error: ', error)
+                self.running = False
 
     def save_data(self, user_name):
         with sqlite3.connect('mydb.db') as db:

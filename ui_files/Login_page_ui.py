@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'login_pageqKgSKj.ui'
+## Form generated from reading UI file 'login_pageiTrwMP.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -35,13 +35,16 @@ class Ui_Dialog(object):
 "")
         self.gridLayout = QGridLayout(Dialog)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.stackedWidget = QStackedWidget(Dialog)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setMinimumSize(QSize(600, 500))
-        self.stackedWidget.setStyleSheet(u"background-color: rgba(255, 255, 255, 0);\n"
-"")
+        self.stackedWidget.setStyleSheet(u"#page, #page_2 {\n"
+"	border-image: url(':bg_img2');\n"
+"}")
         self.page = QWidget()
         self.page.setObjectName(u"page")
+        self.page.setStyleSheet(u"")
         self.gridLayout_2 = QGridLayout(self.page)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)

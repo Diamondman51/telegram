@@ -174,80 +174,140 @@
 # sys.exit(app.exec())
 
 
-import socket
-import sys
-import threading
-import errno
+# import socket
+# import sys
+# import threading
+# import errno
+#
+# HEADER_LENGTH = 10
+#
+# IP = "localhost"
+# PORT = 1234
+#
+#
+# def send_messages(client_socket):
+#     """Handles sending messages to the server."""
+#     while True:
+#         try:
+#             message = input(f"")
+#             if message:
+#                 message = message.encode('utf-8')
+#                 message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
+#                 client_socket.send(message_header + message)
+#         except (OSError, BrokenPipeError):
+#             print("Disconnected from server.")
+#             break
+#
+# def receive_messages(client_socket):
+#     """Handles receiving messages from the server."""
+#     while True:
+#         try:
+#             while True:
+#                 username_header = client_socket.recv(HEADER_LENGTH)
+#                 if not len(username_header):
+#                     print("Connection closed by the server.")
+#                     sys.exit()
+#
+#                 username_length = int(username_header.decode('utf-8'))
+#                 username = client_socket.recv(username_length).decode('utf-8')
+#
+#                 message_header = client_socket.recv(HEADER_LENGTH)
+#                 message_length = int(message_header.decode('utf-8'))
+#                 message = client_socket.recv(message_length).decode('utf-8')
+#
+#                 print(f"{username} > {message}")
+#
+#         except IOError as e:
+#             if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
+#                 print("Reading error", e)
+#                 sys.exit()
+#             continue
+#
+#         except Exception as e:
+#             print('General error', e)
+#             sys.exit()
+#
+#
+# my_username = input("Username: ")
+# client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# client_socket.connect((IP, PORT))
+# client_socket.setblocking(True)
+#
+# # Serverga foydalanuvchi ismini yuborish
+# username = my_username.encode('utf-8')
+# username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
+# client_socket.send(username_header + username)
+#
+# # yuboruvchi va qabul qiluvchi oqimlarni yaratish
+# send_thread = threading.Thread(target=send_messages, args=(client_socket,))
+# receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
+#
+# # yuboruvchi va qabul qiluvchi oqimlarni ishga tushirish
+# send_thread.start()
+# receive_thread.start()
+#
+# # asosiy oqim (thread) bu oqimlarni kutib turadi
+# send_thread.join()
+# receive_thread.join()
+#
+# client_socket.close()
 
-HEADER_LENGTH = 10
+from PySide6.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QHBoxLayout
 
-IP = "localhost"
-PORT = 1234
+class Ui_Form:
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(400, 300)
+        self.verticalLayout = QVBoxLayout(Form)
+        self.horizontalLayout = QHBoxLayout()
+        self.verticalLayout.addLayout(self.horizontalLayout)
 
+class Message(Ui_Form, QWidget):
+    def __init__(self, align=None):
+        super().__init__()
+        self.setupUi(self)
+        self.message_label = QTextEdit()
+        self.message_label.setReadOnly(True)  # Set as read-only if you don't want to edit it
 
-def send_messages(client_socket):
-    """Handles sending messages to the server."""
-    while True:
-        try:
-            message = input(f"")
-            if message:
-                message = message.encode('utf-8')
-                message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
-                client_socket.send(message_header + message)
-        except (OSError, BrokenPipeError):
-            print("Disconnected from server.")
-            break
+        if align == 'right':
+            self.horizontalLayout.addStretch()
+            self.horizontalLayout.addWidget(self.message_label)
+        elif align == 'left':
+            self.horizontalLayout.addWidget(self.message_label)
+            self.horizontalLayout.addStretch()
 
-def receive_messages(client_socket):
-    """Handles receiving messages from the server."""
-    while True:
-        try:
-            while True:
-                username_header = client_socket.recv(HEADER_LENGTH)
-                if not len(username_header):
-                    print("Connection closed by the server.")
-                    sys.exit()
+    def adjust_text_edit_size(self):
+        document = self.message_label.document()
+        document.setTextWidth(self.message_label.viewport().width())
+        size = document.size()
 
-                username_length = int(username_header.decode('utf-8'))
-                username = client_socket.recv(username_length).decode('utf-8')
+        text_width = size.width()
+        text_height = size.height()
 
-                message_header = client_socket.recv(HEADER_LENGTH)
-                message_length = int(message_header.decode('utf-8'))
-                message = client_socket.recv(message_length).decode('utf-8')
+        # Adjust the size of the QTextEdit based on the document size
+        self.message_label.setMaximumSize(text_width + 20, text_height + 20)  # Adding some padding
 
-                print(f"{username} > {message}")
+    def set_text(self, text):
+        self.message_label.setPlainText(text)
+        self.adjust_text_edit_size()
 
-        except IOError as e:
-            if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
-                print("Reading error", e)
-                sys.exit()
-            continue
+# Simulate another class that updates the text
+class TextUpdater:
+    def __init__(self, message_widget):
+        self.message_widget = message_widget
 
-        except Exception as e:
-            print('General error', e)
-            sys.exit()
+    def update_text(self, new_text):
+        self.message_widget.set_text(new_text)
 
+if __name__ == "__main__":
+    app = QApplication([])
 
-my_username = input("Username: ")
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((IP, PORT))
-client_socket.setblocking(True)
+    # Create the Message widget with left alignment
+    message_widget = Message(align='left')
+    message_widget.show()
 
-# Serverga foydalanuvchi ismini yuborish
-username = my_username.encode('utf-8')
-username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
-client_socket.send(username_header + username)
+    # Create a TextUpdater instance and update the text
+    text_updater = TextUpdater(message_widget)
+    text_updater.update_text("Dynamic Text Size\nAnother Line\nYet Another Line")
 
-# yuboruvchi va qabul qiluvchi oqimlarni yaratish
-send_thread = threading.Thread(target=send_messages, args=(client_socket,))
-receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
-
-# yuboruvchi va qabul qiluvchi oqimlarni ishga tushirish
-send_thread.start()
-receive_thread.start()
-
-# asosiy oqim (thread) bu oqimlarni kutib turadi
-send_thread.join()
-receive_thread.join()
-
-client_socket.close()
+    app.exec()

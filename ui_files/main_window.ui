@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>947</width>
-    <height>631</height>
+    <width>920</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,72 +15,126 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <property name="leftMargin">
-    <number>9</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>9</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>9</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>9</number>
+    <number>0</number>
    </property>
-   <item row="2" column="2">
-    <widget class="QLineEdit" name="message_lineEdit">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">padding:  0 0 0 5;</string>
-     </property>
-     <property name="placeholderText">
-      <string>Enter messsage...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="3">
-    <widget class="QPushButton" name="btn_send_message">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="text">
-      <string>Send</string>
-     </property>
-    </widget>
-   </item>
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <item row="0" column="2" colspan="2">
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="QWidget" name="page">
+      <property name="styleSheet">
+       <string notr="true">#page {
+border-image: url(':tg_bg_img_2');
+background-repeat:no-repeat;
+background-position: center;
+}</string>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
-        <number>6</number>
+        <number>0</number>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>6</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>10</number>
        </property>
        <item>
-        <widget class="QListWidget" name="listWidget_for_messages"/>
+        <widget class="QListWidget" name="listWidget_for_messages">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgba(255, 255, 255, 0);
+border:none</string>
+         </property>
+         <property name="verticalScrollMode">
+          <enum>QAbstractItemView::ScrollPerPixel</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_3" native="true">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);
+border:none;
+border-radius: 5;</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>15</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="message_lineEdit">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">padding:  0 0 0 5;</string>
+            </property>
+            <property name="placeholderText">
+             <string>Enter messsage...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_send_message">
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#btn_send_message:pressed {
+	margin: 1 0 0 1
+}
+
+#btn_send_message:hover {
+	border: 1 solid rgb(105, 183, 255);
+	border-radius: 5;
+}</string>
+            </property>
+            <property name="text">
+             <string>Send</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -91,7 +145,7 @@
     <widget class="QWidget" name="widget_2" native="true">
      <property name="maximumSize">
       <size>
-       <width>250</width>
+       <width>220</width>
        <height>16777215</height>
       </size>
      </property>
@@ -100,6 +154,41 @@
 </string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Username</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="username_LineEdit">
+        <property name="styleSheet">
+         <string notr="true">padding: 0 0 2 5;
+color: white;
+border:none;</string>
+        </property>
+        <property name="placeholderText">
+         <string>username</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>541</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="0" column="0" rowspan="2">
        <widget class="QPushButton" name="btn_menu_2">
         <property name="minimumSize">
@@ -144,46 +233,17 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="label">
-        <property name="styleSheet">
-         <string notr="true">color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>Username</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="username_LineEdit">
-        <property name="styleSheet">
-         <string notr="true">padding: 0 0 2 5;
-color: white;
-border:none;</string>
-        </property>
-        <property name="placeholderText">
-         <string>username</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>541</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
      </layout>
     </widget>
    </item>
    <item row="0" column="0" rowspan="3">
     <widget class="QWidget" name="widget" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>65</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(71, 99, 150);
 </string>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>122</width>
-    <height>84</height>
+    <height>56</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,22 +36,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="message_label">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Message text</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout"/>
    </item>
   </layout>
  </widget>
