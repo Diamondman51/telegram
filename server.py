@@ -47,13 +47,13 @@ while True:
 
             # Birinchi bo'lib ismni jonatish kera jonatadigan socketdan
             user = receive_message(client_socket)
-            print('user', user, client_socket)
+            print('user', user, ',', client_socket)
 
             if user is False:
                 continue
 
             sockets_list.append(client_socket)
-            clients[client_socket] = user
+            clients[client_socket] = user['data']
             print(clients)
 
         else:
@@ -71,7 +71,7 @@ while True:
                 print('send_to client')
                 # if client_socket != notified_socket:
                 # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
-                client_socket.send(message['header'] + message['data'])
+                client_socket.send(message['header'] + clients[client_socket] + message['data'])
                 print(f'{client_socket}, {message["header"]} + {message["data"]}')
 
     for notified_socket in exception_socket:

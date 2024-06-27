@@ -42,7 +42,8 @@ class Main_Window(Ui_Form, QWidget):
             self.listWidget_for_messages.setItemWidget(item, message_widget)
 
             # self.cl_sock.send_message(self.username_LineEdit.text(), message)
-            self.data.send_message(self.username_LineEdit.text(), message)
+            # self.data.send_message(self.username_LineEdit.text(), message)
+            self.data.send_message(message)
 
     def receive_message_main(self, full_message):
         print('full_message', full_message)
@@ -60,7 +61,7 @@ class Main_Window(Ui_Form, QWidget):
         self.listWidget_for_messages.setItemWidget(item, message_widget)
 
     def send_message_login(self, username, message):
-        self.data.send_message(username, message)
+        self.data.send_message(message, username)
         # message_widget = QLabel()
         # message_widget.setText(f'{username} {message}')
         # item.foreground()
