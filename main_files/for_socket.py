@@ -73,7 +73,7 @@ class DataBase(QThread):
 
         elif self.flag and message and self.running and self.my_socket:
             try:
-                message = f'{[username]} {message}'.encode('utf-8')
+                message = f'{username} {message}'.encode('utf-8')
                 message_header = f"{len(f'{message}'):<{HEADER}}".encode('utf-8')
                 print('my_socket.send(message_header + message)', message_header.decode() + ' ' + message.decode())
                 self.my_socket.send(message_header + message)

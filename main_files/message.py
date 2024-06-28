@@ -39,7 +39,8 @@ class Message(Ui_Form, QWidget):
         lines = text.split('\n')
         max_width = max(metrics.horizontalAdvance(line) for line in lines)
         total_height = metrics.lineSpacing() * len(lines)
-
+        if max_width > 500:
+            max_width = 500
         # Adjust the size of the QTextEdit based on the content size
         print(max_width)
         print(total_height)
