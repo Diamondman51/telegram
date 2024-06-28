@@ -12,6 +12,7 @@ if res == Login_page.Accepted:
     main_window.username_LineEdit.setText(login.text)
     main_window.username_LineEdit.setReadOnly(True)
     main_window.send_message_login(main_window.username_LineEdit.text(), 'entered to the group')
+    # main_window.add_to_users(login.text)
     main_window.show()
 
 app.exec()
