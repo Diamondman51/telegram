@@ -1,5 +1,4 @@
-
-
+import json
 import socket
 
 import select
@@ -30,7 +29,7 @@ def receive_message(client_socket):
 
         message_length = int(message_header.decode('utf-8').strip())
 
-        return {'header': message_header, 'data': client_socket.recv(message_length)}
+        return {'header': message_header.decode(), 'data': client_socket.recv(message_length).decode()}
     except:
         return False
 
@@ -47,17 +46,34 @@ while True:
 
             # Birinchi bo'lib ismni jonatish kera jonatadigan socketdan
             user = receive_message(client_socket)
-            print('user', user, client_socket)
+            print('user', user, type(user), client_socket)
 
             if user is False:
                 continue
 
+            # Converting to bytes
+            data = json.dumps(user).encode()
+            length = f'{len(data):<{HEADER_LENGTH}}'.encode()
+
             sockets_list.append(client_socket)
-            clients[client_socket] = user
-            print(clients)
+            clients[client_socket] = user['data']
+
+            # Send notification about connection of new user to all users who is online
+            for client_socket in clients:
+                print('Entered to share mode')
+                # print('send_to client')
+                # if client_socket != notified_socket:
+                # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+                # client_socket.send(user['header'] + user['data'])
+                client_socket.send(length + data)
+
+            print('clients', clients)
 
         else:
             message = receive_message(notified_socket)
+            user_info = json.dumps(message).encode()
+            user_info = json.loads(user_info)
+            user_info = json.loads(user_info['data'])
 
             if message is False:
                 print('Exit')
@@ -66,13 +82,16 @@ while True:
                 continue
 
             user = clients[notified_socket]
+            # message['data']
 
-            for client_socket in clients:
+            for cl_socket in clients:
                 print('send_to client')
-                # if client_socket != notified_socket:
-                # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
-                client_socket.send(message['header'] + message['data'])
-                print(f'{client_socket}, {message["header"]} + {message["data"]}')
+                print('row', 86, clients[cl_socket], user_info['to'])
+                if clients[cl_socket] == user_info['to']:
+                    # if client_socket != notified_socket:
+                    # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+                    cl_socket.send(message['header'].encode() + message['data'].encode())
+                print(f'{cl_socket}, {message["header"]} + {message["data"]}')
 
     for notified_socket in exception_socket:
         sockets_list.remove(notified_socket)
