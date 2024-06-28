@@ -29,9 +29,19 @@ def receive_message(client_socket):
 
         message_length = int(message_header.decode('utf-8').strip())
 
-        return {'header': message_header.decode(), 'data': client_socket.recv(message_length).decode()}
+        return client_socket.recv(message_length).decode()
     except:
         return False
+
+
+def send_message_to_all(message, socket_list):
+    for socket in socket_list:
+        send_message(message, socket)
+
+
+def send_message(message:dict, socket):
+    message = json.dumps(message).encode()
+    socket.send(message)
 
 
 while True:
@@ -56,7 +66,6 @@ while True:
             length = f'{len(data):<{HEADER_LENGTH}}'.encode()
 
             sockets_list.append(client_socket)
-            clients[client_socket] = user['data']
 
             # Send notification about connection of new user to all users who is online
             for client_socket in clients:
@@ -67,13 +76,15 @@ while True:
                 # client_socket.send(user['header'] + user['data'])
                 client_socket.send(length + data)
 
+            clients[client_socket] = user['data']
             print('clients', clients)
 
         else:
             message = receive_message(notified_socket)
             user_info = json.dumps(message).encode()
+            print('user_info 1: ', user_info)
             user_info = json.loads(user_info)
-            user_info = json.loads(user_info['data'])
+            user_info['data'] = json.loads(user_info['data'])
 
             if message is False:
                 print('Exit')
@@ -86,12 +97,14 @@ while True:
 
             for cl_socket in clients:
                 print('send_to client')
-                print('row', 86, clients[cl_socket], user_info['to'])
-                if clients[cl_socket] == user_info['to']:
-                    # if client_socket != notified_socket:
-                    # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
-                    cl_socket.send(message['header'].encode() + message['data'].encode())
+                print('row', 86, clients[cl_socket], user_info['data']['to'])
+                user_info = json.dumps(user_info).encode()
+                # if clients[cl_socket] == user_info['data']['to']:
+                # if client_socket != notified_socket:
+                # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
+                cl_socket.send(user_info['header'] + user_info['data'])
                 print(f'{cl_socket}, {message["header"]} + {message["data"]}')
+                print('clients 2: ', clients)
 
     for notified_socket in exception_socket:
         sockets_list.remove(notified_socket)

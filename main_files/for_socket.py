@@ -47,7 +47,9 @@ class DataBase(QThread):
 
     def receive_message(self):
         print('receive_message')
+
         username_header = self.my_socket.recv(HEADER)
+
         print(123)
         if not len(username_header):
             self.running = False
@@ -58,9 +60,9 @@ class DataBase(QThread):
         #     self.new_user.emit(new_user)
         #     DataBase.flag_1 = True
 
-        print(username_header.decode())
+        print('username_header.decode()', username_header.decode())
         message_length = int(username_header.decode('utf-8'))
-        print(message_length)
+        print('message_length', message_length)
         full_message: bytes = self.my_socket.recv(message_length)
         print('full_message', type(full_message))
 
@@ -94,7 +96,7 @@ class DataBase(QThread):
 
         elif self.flag_2 and message and self.running and self.my_socket:
             try:
-                message = filtering(username, message, to)
+                message = filtering(username, message, to, data_type=1)
                 message_header = f"{len(f'{message}'):<{HEADER}}".encode('utf-8')
                 print('my_socket.send(message_header + message)', message_header.decode() + ' ' + message.decode())
                 self.my_socket.send(message_header + message)
@@ -116,3 +118,6 @@ class DataBase(QThread):
 
             db.execute(query, (user_name, ))
             db.commit()
+
+    def stop(self):
+        self.running = False
