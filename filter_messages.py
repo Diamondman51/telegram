@@ -1,12 +1,13 @@
 import json
 
 
-def filtering(user, message, to=None, user_socket=None, data_type=1):
+def filtering(user, message, to=None, user_socket=None, data_type=1, users=None):
     data = {
-        'type': data_type,  # 0 - data about entered/exited, 1 - message
+        'type': data_type,  # 0 - data about entered, 1- exited, 2 - message
         'from': user,
         'message': message,
-        'to': to
+        'to': to,
+        'users': users
     }
 
     return json.dumps(data).encode()

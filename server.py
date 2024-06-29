@@ -34,16 +34,20 @@ def receive_message(client_socket):
         return False
 
 
-def send_message_to_all(message:dict, socket_list: list):
-    for socket in socket_list:
-        send_message(message, socket)
+def send_message_to_all(message: dict, clients: dict, exclude_soket=None):
+    for user_socket in clients.keys():
+        # for us in clients:
+        if exclude_soket is None:
+            send_message(message, user_socket)
+        elif user_socket != exclude_soket:
+            send_message(message, user_socket)
 
 
-def send_message(message: dict, socket):
+def send_message(message: dict, user_socket):
     message = json.dumps(message).encode()
     length = f"{len(message):<{HEADER_LENGTH}}".encode()
-    print('send_message()', socket)
-    socket.send(length + message)
+    print('send_message()', user_socket, '\n', '\n', 'message', message, '\n')
+    user_socket.send(length + message)
 
 
 while True:
@@ -66,27 +70,31 @@ while True:
             data = json.loads(user)
 
             if data['type'] == 0:
+                # for cll in clients:
+                #     print()
+
+                # data['clients'] = [clients[cl] for cl in clients]
+                print('data 75', data)
 
                 # Converting to bytes
-                data_2 = json.dumps(data).encode()
-                length = f'{len(data_2):<{HEADER_LENGTH}}'.encode()
 
                 sockets_list.append(client_socket)
+                print('sockets_list: ', sockets_list)
 
-                print('clients 76', clients)
+                print('clients 82', clients)
+                data['users'] = list(clients.values())
                 # Send notification about connection of new user to all users who is online
-
-                for client in clients:
-                    print('Entered to share mode')
-                    # on for range client_socket changed to client
-                    client.send(length + data_2)
-
+                send_message_to_all(data, clients)
                 clients[client_socket] = data['from']
+
+
 
         else:
 
             data = receive_message(notified_socket)
             data = json.loads(data)
+            data['clients'] = [clients[cl] for cl in clients]
+            print('data 94', data)
             print('data 1: ', data)
 
             if data is False:

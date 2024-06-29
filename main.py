@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication
 
-from Login_page import Login_page
+from main_files.Login_page import Login_page
 from main_files.main_window import Main_Window
 
 app = QApplication()

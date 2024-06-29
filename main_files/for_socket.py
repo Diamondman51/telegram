@@ -47,10 +47,10 @@ class DataBase(QThread):
     def receive_message(self):
         print('receive_message')
 
-        username_header = self.my_socket.recv(HEADER)
+        message_length = self.my_socket.recv(HEADER)
 
         print(123)
-        if not len(username_header):
+        if not len(message_length):
             self.running = False
 
         # Emit new user
@@ -59,22 +59,24 @@ class DataBase(QThread):
         #     self.new_user.emit(new_user)
         #     DataBase.flag_1 = True
 
-        print('username_header.decode()', username_header)
-        message_length = int(username_header.decode('utf-8'))
-        print('message_length', message_length)
+        print('rc username_header.decode()', message_length)
+        message_length = int(message_length.decode('utf-8'))
+        print('rc message_length', message_length)
         full_message: bytes = self.my_socket.recv(message_length)
-        print('full_message', type(full_message), full_message)
+        print('rc full_message', type(full_message), full_message)
 
         full_message: dict = json.loads(full_message)
-        print('full_message 2: ', type(full_message), full_message)
+        print('rc full_message 2: ', type(full_message), full_message)
 
         if full_message['type'] == 0:
-            return self.new_user.emit(full_message['from'])
+            # full_message['users']
 
-        print('full_message', full_message, message_length)
+            return self.new_user.emit(full_message)
+
+        print('rc full_message', full_message, message_length)
 
         self.received.emit(full_message)
-        print('signal emited', full_message)
+        print('rc signal emited', full_message)
 
     flag_2 = False
 
