@@ -12,10 +12,9 @@ IP = 'localhost'
 PORT = 1234
 
 
-
 class DataBase(QThread):
     new_user = Signal(str)
-    received = Signal(tuple)
+    received = Signal(dict)
 
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     my_socket.connect((IP, PORT))
@@ -60,43 +59,35 @@ class DataBase(QThread):
         #     self.new_user.emit(new_user)
         #     DataBase.flag_1 = True
 
-        print('username_header.decode()', username_header.decode())
+        print('username_header.decode()', username_header)
         message_length = int(username_header.decode('utf-8'))
         print('message_length', message_length)
         full_message: bytes = self.my_socket.recv(message_length)
-        print('full_message', type(full_message))
+        print('full_message', type(full_message), full_message)
 
-        full_message = json.loads(full_message)
+        full_message: dict = json.loads(full_message)
+        print('full_message 2: ', type(full_message), full_message)
 
-        if full_message['header'] and full_message['data']:
-            return self.new_user.emit(full_message['data'])
+        if full_message['type'] == 0:
+            return self.new_user.emit(full_message['from'])
 
         print('full_message', full_message, message_length)
 
-        username = full_message.split()[0]
-        message = full_message[len(username):]
-
-        self.received.emit((username, message))
-        print('signal emited', username, message)
+        self.received.emit(full_message)
+        print('signal emited', full_message)
 
     flag_2 = False
 
-    def send_message(self, username: str, message: str, to=None):
+    def send_message(self, username: str, message: str = None, to=None):
         print('send_message')
-        if not self.flag_2:
-            try:
-                username_message = f'{username}'.encode('utf-8')
-                message_header = f"{len(f'{username_message}'):<{HEADER}}".encode('utf-8')
-                self.my_socket.send(message_header + username_message)
-                print('username_message', username_message)
-                DataBase.flag_2 = True
-            except (OSError, BrokenPipeError) as error:
-                print('Error: ', error)
-                self.running = False
 
-        elif self.flag_2 and message and self.running and self.my_socket:
+        if message and self.running and self.my_socket:
             try:
-                message = filtering(username, message, to, data_type=1)
+                data_type = 1
+                if not self.flag_2:
+                    data_type = 0
+                    DataBase.flag_2 = True
+                message = filtering(username, message, to=to, data_type=data_type)
                 message_header = f"{len(f'{message}'):<{HEADER}}".encode('utf-8')
                 print('my_socket.send(message_header + message)', message_header.decode() + ' ' + message.decode())
                 self.my_socket.send(message_header + message)

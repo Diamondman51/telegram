@@ -1,7 +1,7 @@
 import json
 
 
-def filtering(user, message, to, user_socket=None, data_type=1):
+def filtering(user, message, to=None, user_socket=None, data_type=1):
     data = {
         'type': data_type,  # 0 - data about entered/exited, 1 - message
         'from': user,

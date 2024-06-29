@@ -251,63 +251,79 @@
 # receive_thread.join()
 #
 # client_socket.close()
+#
+# from PySide6.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QHBoxLayout
+#
+# class Ui_Form:
+#     def setupUi(self, Form):
+#         Form.setObjectName("Form")
+#         Form.resize(400, 300)
+#         self.verticalLayout = QVBoxLayout(Form)
+#         self.horizontalLayout = QHBoxLayout()
+#         self.verticalLayout.addLayout(self.horizontalLayout)
+#
+# class Message(Ui_Form, QWidget):
+#     def __init__(self, align=None):
+#         super().__init__()
+#         self.setupUi(self)
+#         self.message_label = QTextEdit()
+#         self.message_label.setReadOnly(True)  # Set as read-only if you don't want to edit it
+#
+#         if align == 'right':
+#             self.horizontalLayout.addStretch()
+#             self.horizontalLayout.addWidget(self.message_label)
+#         elif align == 'left':
+#             self.horizontalLayout.addWidget(self.message_label)
+#             self.horizontalLayout.addStretch()
+#
+#     def adjust_text_edit_size(self):
+#         document = self.message_label.document()
+#         document.setTextWidth(self.message_label.viewport().width())
+#         size = document.size()
+#
+#         text_width = size.width()
+#         text_height = size.height()
+#
+#         # Adjust the size of the QTextEdit based on the document size
+#         self.message_label.setMaximumSize(text_width + 20, text_height + 20)  # Adding some padding
+#
+#     def set_text(self, text):
+#         self.message_label.setPlainText(text)
+#         self.adjust_text_edit_size()
+#
+# # Simulate another class that updates the text
+# class TextUpdater:
+#     def __init__(self, message_widget):
+#         self.message_widget = message_widget
+#
+#     def update_text(self, new_text):
+#         self.message_widget.set_text(new_text)
+#
+# if __name__ == "__main__":
+#     app = QApplication([])
+#
+#     # Create the Message widget with left alignment
+#     message_widget = Message(align='left')
+#     message_widget.show()
+#
+#     # Create a TextUpdater instance and update the text
+#     text_updater = TextUpdater(message_widget)
+#     text_updater.update_text("Dynamic Text Size\nAnother Line\nYet Another Line")
+#
+#     app.exec()
 
-from PySide6.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QHBoxLayout
 
-class Ui_Form:
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(400, 300)
-        self.verticalLayout = QVBoxLayout(Form)
-        self.horizontalLayout = QHBoxLayout()
-        self.verticalLayout.addLayout(self.horizontalLayout)
+class K:
+    g = True
 
-class Message(Ui_Form, QWidget):
-    def __init__(self, align=None):
-        super().__init__()
-        self.setupUi(self)
-        self.message_label = QTextEdit()
-        self.message_label.setReadOnly(True)  # Set as read-only if you don't want to edit it
+    def __init__(self, n):
+        self.n = n
+        if self.n == 1:
+            self.g = False
+        elif self.n == 2:
+            K.g = False
 
-        if align == 'right':
-            self.horizontalLayout.addStretch()
-            self.horizontalLayout.addWidget(self.message_label)
-        elif align == 'left':
-            self.horizontalLayout.addWidget(self.message_label)
-            self.horizontalLayout.addStretch()
 
-    def adjust_text_edit_size(self):
-        document = self.message_label.document()
-        document.setTextWidth(self.message_label.viewport().width())
-        size = document.size()
-
-        text_width = size.width()
-        text_height = size.height()
-
-        # Adjust the size of the QTextEdit based on the document size
-        self.message_label.setMaximumSize(text_width + 20, text_height + 20)  # Adding some padding
-
-    def set_text(self, text):
-        self.message_label.setPlainText(text)
-        self.adjust_text_edit_size()
-
-# Simulate another class that updates the text
-class TextUpdater:
-    def __init__(self, message_widget):
-        self.message_widget = message_widget
-
-    def update_text(self, new_text):
-        self.message_widget.set_text(new_text)
-
-if __name__ == "__main__":
-    app = QApplication([])
-
-    # Create the Message widget with left alignment
-    message_widget = Message(align='left')
-    message_widget.show()
-
-    # Create a TextUpdater instance and update the text
-    text_updater = TextUpdater(message_widget)
-    text_updater.update_text("Dynamic Text Size\nAnother Line\nYet Another Line")
-
-    app.exec()
+k = K(1)
+k.g = 1
+print(k.g)

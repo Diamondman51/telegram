@@ -34,14 +34,16 @@ def receive_message(client_socket):
         return False
 
 
-def send_message_to_all(message, socket_list):
+def send_message_to_all(message:dict, socket_list: list):
     for socket in socket_list:
         send_message(message, socket)
 
 
-def send_message(message:dict, socket):
+def send_message(message: dict, socket):
     message = json.dumps(message).encode()
-    socket.send(message)
+    length = f"{len(message):<{HEADER_LENGTH}}".encode()
+    print('send_message()', socket)
+    socket.send(length + message)
 
 
 while True:
@@ -56,55 +58,64 @@ while True:
 
             # Birinchi bo'lib ismni jonatish kera jonatadigan socketdan
             user = receive_message(client_socket)
-            print('user', user, type(user), client_socket)
+            print('user', user, client_socket)
 
             if user is False:
                 continue
 
-            # Converting to bytes
-            data = json.dumps(user).encode()
-            length = f'{len(data):<{HEADER_LENGTH}}'.encode()
+            data = json.loads(user)
 
-            sockets_list.append(client_socket)
+            if data['type'] == 0:
 
-            # Send notification about connection of new user to all users who is online
-            for client_socket in clients:
-                print('Entered to share mode')
-                # print('send_to client')
-                # if client_socket != notified_socket:
-                # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
-                # client_socket.send(user['header'] + user['data'])
-                client_socket.send(length + data)
+                # Converting to bytes
+                data_2 = json.dumps(data).encode()
+                length = f'{len(data_2):<{HEADER_LENGTH}}'.encode()
 
-            clients[client_socket] = user['data']
-            print('clients', clients)
+                sockets_list.append(client_socket)
+
+                print('clients 76', clients)
+                # Send notification about connection of new user to all users who is online
+
+                for client in clients:
+                    print('Entered to share mode')
+                    # on for range client_socket changed to client
+                    client.send(length + data_2)
+
+                clients[client_socket] = data['from']
 
         else:
-            message = receive_message(notified_socket)
-            user_info = json.dumps(message).encode()
-            print('user_info 1: ', user_info)
-            user_info = json.loads(user_info)
-            user_info['data'] = json.loads(user_info['data'])
 
-            if message is False:
+            data = receive_message(notified_socket)
+            data = json.loads(data)
+            print('data 1: ', data)
+
+            if data is False:
                 print('Exit')
                 sockets_list.remove(notified_socket)
                 del clients[notified_socket]
                 continue
 
-            user = clients[notified_socket]
-            # message['data']
-
             for cl_socket in clients:
-                print('send_to client')
-                print('row', 86, clients[cl_socket], user_info['data']['to'])
-                user_info = json.dumps(user_info).encode()
-                # if clients[cl_socket] == user_info['data']['to']:
-                # if client_socket != notified_socket:
-                # client_socket.send(user['header'] + user['data'] + message['header'] + message['data'])
-                cl_socket.send(user_info['header'] + user_info['data'])
-                print(f'{cl_socket}, {message["header"]} + {message["data"]}')
-                print('clients 2: ', clients)
+                if clients[cl_socket] == data['to']:
+                    send_message(data, cl_socket)
+                    print(f'{cl_socket}, {data["message"]} {data["from"]} {data["to"]}')
+                    print('clients 2: ', clients[cl_socket], clients)
+
+            # try:
+            #     data = receive_message(notified_socket)
+            #     data = json.loads(data)
+            #     print('data 1: ', data)
+            #
+            #     for cl_socket in clients:
+            #         if clients[cl_socket] == data['to']:
+            #             send_message(data, cl_socket)
+            #             print(f'{cl_socket}, {data["message"]} {data["from"]} {data["to"]}')
+            #             print('clients 2: ', clients)
+            # except TypeError:
+            #     print('Exit')
+            #     sockets_list.remove(notified_socket)
+            #     del clients[notified_socket]
+            #     continue
 
     for notified_socket in exception_socket:
         sockets_list.remove(notified_socket)
