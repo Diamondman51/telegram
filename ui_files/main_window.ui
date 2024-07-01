@@ -221,7 +221,9 @@ border:none;</string>
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">alternate-background-color: rgb(129, 196, 255);</string>
+      <string notr="true">alternate-background-color: rgb(129, 196, 255);
+background-color: rgb(71, 99, 150);
+</string>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
