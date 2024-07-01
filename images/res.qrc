@@ -1,9 +1,16 @@
 <RCC>
   <qresource>
-    <file>tg_bg_img_2.jpg</file>
+    <file>attach_hover.png</file>
+    <file>attach_img.png</file>
     <file>bg_img.jpg</file>
     <file>bg_img2.jpg</file>
     <file>menu.png</file>
+    <file>send_img.png</file>
+    <file>sticker_hover.png</file>
+    <file>sticker_img.png</file>
     <file>tg_bg_img.jpg</file>
+    <file>tg_bg_img_2.jpg</file>
+    <file>voice_hover.png</file>
+    <file>voice_img.png</file>
   </qresource>
 </RCC>

@@ -3,6 +3,8 @@ import socket
 
 import select
 
+from filter_messages import filtering
+
 PORT = 1234
 IP = 'localhost'
 HEADER_LENGTH = 10
@@ -82,48 +84,39 @@ while True:
                 print('sockets_list: ', sockets_list)
 
                 print('clients 82', clients)
+                clients[client_socket] = data['from']
                 data['users'] = list(clients.values())
+                print(data)
                 # Send notification about connection of new user to all users who is online
                 send_message_to_all(data, clients)
-                clients[client_socket] = data['from']
-
-
 
         else:
 
             data = receive_message(notified_socket)
-            data = json.loads(data)
-            data['clients'] = [clients[cl] for cl in clients]
-            print('data 94', data)
-            print('data 1: ', data)
+            print('row 96, type', type(data), data)
 
-            if data is False:
-                print('Exit')
-                sockets_list.remove(notified_socket)
-                del clients[notified_socket]
-                continue
-
-            for cl_socket in clients:
-                if clients[cl_socket] == data['to']:
-                    send_message(data, cl_socket)
-                    print(f'{cl_socket}, {data["message"]} {data["from"]} {data["to"]}')
-                    print('clients 2: ', clients[cl_socket], clients)
+            if data != False:
 
             # try:
-            #     data = receive_message(notified_socket)
-            #     data = json.loads(data)
-            #     print('data 1: ', data)
-            #
-            #     for cl_socket in clients:
-            #         if clients[cl_socket] == data['to']:
-            #             send_message(data, cl_socket)
-            #             print(f'{cl_socket}, {data["message"]} {data["from"]} {data["to"]}')
-            #             print('clients 2: ', clients)
+                data = json.loads(data)
+                data['users'] = [clients[cl] for cl in clients]
+
+                print('data 1: ', data)
+
+                for cl_socket in clients:
+                    if clients[cl_socket] == data['to']:
+                        send_message(data, cl_socket)
+                        print(f'{cl_socket}, {data["message"]} {data["from"]} {data["to"]}')
+                        print('clients 2: ', clients)
             # except TypeError:
-            #     print('Exit')
-            #     sockets_list.remove(notified_socket)
-            #     del clients[notified_socket]
-            #     continue
+            else:
+                print('Exit')
+                if clients[notified_socket]:
+                    new_data = filtering(clients[notified_socket], None, data_type=1)
+                    sockets_list.remove(notified_socket)
+                    del clients[notified_socket]
+                    send_message_to_all(new_data, clients)
+                    continue
 
     for notified_socket in exception_socket:
         sockets_list.remove(notified_socket)

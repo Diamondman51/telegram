@@ -313,17 +313,6 @@
 #     app.exec()
 
 
-class K:
-    g = True
+dc = {'from': 'Java', 'message': 'Hello', 'to': 'Axmed', 'type': 1, 'users': None}
 
-    def __init__(self, n):
-        self.n = n
-        if self.n == 1:
-            self.g = False
-        elif self.n == 2:
-            K.g = False
-
-
-k = K(1)
-k.g = 1
-print(k.g)
+print(dc[1:])

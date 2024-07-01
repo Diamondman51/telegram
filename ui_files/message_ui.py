@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'messagerxGCvu.ui'
+## Form generated from reading UI file 'messageIHCzqX.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QSizePolicy,
-    QVBoxLayout, QWidget)
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize)
+from PySide6.QtGui import (QFont)
+from PySide6.QtWidgets import (QHBoxLayout, QLabel, QSizePolicy,
+                               QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(122, 56)
+        Form.resize(245, 72)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Form.sizePolicy().hasHeightForWidth())
+        Form.setSizePolicy(sizePolicy)
         Form.setStyleSheet(u"padding: 5")
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -35,10 +35,14 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.username_label)
 
-        self.horizontalLayout = QHBoxLayout()
+        self.widgett = QWidget(Form)
+        self.widgett.setObjectName(u"widgett")
+        sizePolicy.setHeightForWidth(self.widgett.sizePolicy().hasHeightForWidth())
+        self.widgett.setSizePolicy(sizePolicy)
+        self.horizontalLayout = QHBoxLayout(self.widgett)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
 
-        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout.addWidget(self.widgett)
 
 
         self.retranslateUi(Form)

@@ -13,8 +13,9 @@ PORT = 1234
 
 
 class DataBase(QThread):
-    new_user = Signal(str)
+    new_user = Signal(dict)
     received = Signal(dict)
+    delete = Signal(dict)
 
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     my_socket.connect((IP, PORT))
@@ -73,10 +74,12 @@ class DataBase(QThread):
 
             return self.new_user.emit(full_message)
 
-        print('rc full_message', full_message, message_length)
-
-        self.received.emit(full_message)
-        print('rc signal emited', full_message)
+            print('rc full_message', full_message, message_length)
+        elif full_message['type'] == 2:
+            self.received.emit(full_message)
+            print('rc signal emited', full_message)
+        elif full_message['type'] == 1:
+            self.delete.emit(full_message)
 
     flag_2 = False
 
@@ -85,7 +88,7 @@ class DataBase(QThread):
 
         if message and self.running and self.my_socket:
             try:
-                data_type = 1
+                data_type = 2
                 if not self.flag_2:
                     data_type = 0
                     DataBase.flag_2 = True
