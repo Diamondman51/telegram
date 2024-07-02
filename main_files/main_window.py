@@ -86,6 +86,8 @@ class Main_Window(Ui_Form, QWidget):
             # if full_message['from']
             # self.users_listWidget.setFocus()
         self.add_to_users(full_message)
+        # TODO finish counting new messages
+        n_of_messages = self.user_widget.dialog.listWidget_for_messages.count()
 
     def send_message_login(self, username, message):
         self.data.send_message(username, message)
@@ -94,12 +96,7 @@ class Main_Window(Ui_Form, QWidget):
 
         print('\n', 'full_message: ', full_message, '\n')
         for user in full_message['users']:
-            print('main for loop: ', user, self.list_of_users)
-            # if full_message['from'] not in self.list_of_users:
-            print('row 107', 'user: ', user, "full_message['from']': ", full_message['from'], type(full_message['from']), 'self.list_of_users: ', self.list_of_users, "self.username_LineEdit.text()", self.username_LineEdit.text(),
-                  user not in self.list_of_users and user != self.username_LineEdit.text())
             if user not in self.list_of_users and user != self.username_LineEdit.text():
-                # self.add_to_users(user)
 
                 self.user_widget = Add_User()
 
@@ -122,6 +119,7 @@ class Main_Window(Ui_Form, QWidget):
             widget = self.users_listWidget.itemWidget(item)
             if widget.label.text() == full_message['from']:
                 self.users_listWidget.takeItem(self.users_listWidget.row(item))
+                self.stackedWidget.removeWidget(self.user_widget.dialog)
 
     def menu_clicked(self, flag):
         self.btn_menu_1.setChecked(not flag)

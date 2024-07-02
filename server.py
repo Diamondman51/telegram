@@ -46,11 +46,14 @@ def send_message_to_all(message: dict, clients: dict, exclude_soket=None):
 
 
 def send_message(message: dict, user_socket):
-    message = json.dumps(message).encode()
-    length = f"{len(message):<{HEADER_LENGTH}}".encode()
-    print('send_message()', user_socket, '\n', '\n', 'message', message, '\n')
-    user_socket.send(length + message)
-
+    try:
+        message = json.dumps(message).encode()
+        length = f"{len(message):<{HEADER_LENGTH}}".encode()
+        print('send_message()', user_socket, '\n', '\n', 'message', message, '\n')
+        user_socket.send(length + message)
+    except TypeError:
+        length = f"{len(message):<{HEADER_LENGTH}}".encode()
+        user_socket.send(length + message)
 
 while True:
     read_socket, _, exception_socket = select.select(sockets_list, [], sockets_list)
