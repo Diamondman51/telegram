@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowyiaqOo.ui'
+## Form generated from reading UI file 'main_windowHsqNpk.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.3
 ##
@@ -27,6 +27,8 @@ class Ui_Form(object):
         Form.resize(979, 635)
         self.gridLayout_3 = QGridLayout(Form)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setHorizontalSpacing(0)
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.widget = QWidget(Form)
         self.widget.setObjectName(u"widget")
         self.widget.setMaximumSize(QSize(65, 16777215))
