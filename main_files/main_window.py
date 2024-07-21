@@ -37,8 +37,6 @@ class Main_Window(Ui_Form, QWidget):
         self.stackedWidget.setCurrentWidget(self.user_widget.dialog)
 
     def send_message_main(self):
-        # TODO yellow warnings
-
         # print(123)
         message_widget = Message('right')
         message_widget.message_label.setAlignment(Qt.AlignRight)
@@ -63,7 +61,6 @@ class Main_Window(Ui_Form, QWidget):
             self.user_widget.dialog.message_lineEdit.clear()
 
     def receive_message_main(self, full_message: dict):
-        # TODO yellow warnings
         print('full_message', full_message)
         message_widget = Message('left')
         message_widget.username_label.setAlignment(Qt.AlignLeft)
@@ -122,7 +119,8 @@ class Main_Window(Ui_Form, QWidget):
             item = self.users_listWidget.item(row)
             widget = self.users_listWidget.itemWidget(item)
             if widget.label.text() == full_message['from']:
-                self.users_listWidget.takeItem(self.users_listWidget.row(item))
+                # self.users_listWidget.takeItem(self.users_listWidget.row(item))
+                self.users_listWidget.takeItem(row)
                 self.stackedWidget.removeWidget(self.user_widget.dialog)
 
     def menu_clicked(self, flag):
