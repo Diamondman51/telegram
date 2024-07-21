@@ -385,8 +385,8 @@ class MainWindow(QWidget):
         self.text_edit.insertSticker('path/to/your/sticker.png')
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     window = MainWindow()
+#     window.show()
+#     sys.exit(app.exec())
