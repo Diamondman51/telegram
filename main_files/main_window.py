@@ -5,7 +5,7 @@ from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QListWidgetItem, QLabel
 
 from main_files.Dialog_for_each_user import Dialog_for_each_user
-from main_files.for_socket import DataBase
+from main_files.client_socket import DataBase
 from main_files.message import Message
 from ui_files.main_window_ui import Ui_Form
 
@@ -101,7 +101,11 @@ class Main_Window(Ui_Form, QWidget):
                 self.user_widget = Add_User()
 
                 self.user_widget.label.setText(user)
-                self.user_widget.label.setStyleSheet('color: black; font-size: 24px; padding: 8')
+                self.user_widget.label.setStyleSheet('''#label {
+                                                        color: black; font-size: 24px; margin: 8; background-color: rgba(0, 0, 0, 0);}
+                                                     #user {
+                                                        background-color: green
+                                                     }''')
                 self.user_widget.label.adjustSize()
                 item = QListWidgetItem()
                 item.setSizeHint(self.user_widget.label.sizeHint())
@@ -131,3 +135,5 @@ class Add_User(QWidget):
         super().__init__()
         self.label = QLabel(self)
         self.dialog = Dialog_for_each_user()
+        self.label.setObjectName(u'label')
+        self.setObjectName(u'user')

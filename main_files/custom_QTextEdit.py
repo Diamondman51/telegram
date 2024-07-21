@@ -1,4 +1,4 @@
-from PySide6.QtCore import QSize
+from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import QTextEdit
 
 
@@ -7,6 +7,7 @@ class CustomQTextEdit(QTextEdit):
         super().__init__()
         self.setPlaceholderText('Enter text...')
         self.textChanged.connect(self.new_size)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
     def new_size(self):
         # doc = self.document()

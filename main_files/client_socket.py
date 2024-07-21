@@ -1,30 +1,40 @@
 import errno
+import json
 import socket
+import sqlite3
 
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import Signal, QThread
 
-HEADER_LENGTH = 10
-IP = "localhost"
+from filter_messages import filtering
+
+HEADER = 10
+IP = 'localhost'
 PORT = 1234
 
 
-class ClientSocket(QThread):
-    # received = Signal(list)
-    received = Signal(list)
-    def __init__(self, ip=IP, port=PORT, parent=None):
+class DataBase(QThread):
+    new_user = Signal(dict)
+    received = Signal(dict)
+    delete = Signal(dict)
+
+    # TODO Before(just for note)
+    my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # my_socket.connect((IP, PORT))
+    # my_socket.setblocking(True)
+
+    def __init__(self, ip=IP, port=PORT):
         super().__init__()
         self.ip = ip
         self.port = port
         self.running = False
 
-    # client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
     def run(self):
-        # print('run')
+        # TODO Now(just for note)
+        # self.my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.my_socket.connect((IP, PORT))
+        self.my_socket.setblocking(True)
+
         self.running = True
-        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect((self.ip, self.port))
-        self.client_socket.setblocking(True)
 
         while self.running:
             try:
@@ -32,45 +42,83 @@ class ClientSocket(QThread):
                 self.receive_message()
             except IOError as e:
                 if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
-                    print("Reading error", e)
+                    print('reading error')
                     break
             except Exception as e:
                 print('General error', e)
                 break
 
+    flag_1 = False
+
     def receive_message(self):
-        print('receive_message activated')
-        username_header = self.client_socket.recv(HEADER_LENGTH)
-        print('123')
-        if not len(username_header):
+        print('receive_message')
+
+        message_length = self.my_socket.recv(HEADER)
+
+        print(123)
+        if not len(message_length):
             self.running = False
 
-        length = int(username_header.decode('utf-8'))
-        full_message = self.client_socket.recv(length).decode('utf-8')
-        # print(full_message.split()[0])
-        username = full_message.split()[0]
-        message = full_message.split()[1:]
+        # Emit new user
+        # if not self.flag_1:
+        #     new_user = self.my_socket.recv(int(username_header.decode()))
+        #     self.new_user.emit(new_user)
+        #     DataBase.flag_1 = True
 
-        print('full_message', full_message)
+        print('rc username_header.decode()', message_length)
+        message_length = int(message_length.decode('utf-8'))
+        print('rc message_length', message_length)
+        full_message: bytes = self.my_socket.recv(message_length)
+        print('rc full_message', type(full_message), full_message)
 
-        self.received.emit([username, message])
-        print(f'username: {username}, message: {message}')
-        return {'username': username, 'message': message}
+        full_message: dict = json.loads(full_message)
+        print('rc full_message 2: ', type(full_message), full_message)
 
-    def send_message(self, username, message):
-        # print('send_message')
-        """Handles sending messages to the server."""
-        if self.client_socket and self.running:
+        if full_message['type'] == 0:
+            # full_message['users']
+
+            return self.new_user.emit(full_message)
+
+            print('rc full_message', full_message, message_length)
+        elif full_message['type'] == 2:
+            self.received.emit(full_message)
+            print('rc signal emited', full_message)
+        elif full_message['type'] == 1:
+            self.delete.emit(full_message)
+
+    flag_2 = False
+
+    def send_message(self, username: str, message: str = None, to=None):
+        print('send_message')
+
+        if message and self.running and self.my_socket:
             try:
-                message = f'{username} {message}'.encode('utf-8')
-                message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
-                self.client_socket.send(message_header + message)
-            except (OSError, BrokenPipeError):
-                print("Disconnected from server.")
+                data_type = 2
+                if not self.flag_2:
+                    data_type = 0
+                    DataBase.flag_2 = True
+                message = filtering(username, message, to=to, data_type=data_type)
+                message_header = f"{len(f'{message}'):<{HEADER}}".encode('utf-8')
+                print('my_socket.send(message_header + message)', message_header.decode() + ' ' + message.decode())
+                self.my_socket.send(message_header + message)
+            except (OSError, BrokenPipeError) as error:
+                print('Error: ', error)
                 self.running = False
 
+    def save_data(self, user_name):
+        with sqlite3.connect('mydb.db') as db:
+            query = '''create table if not exists mydata (
+                        username varchar not null
+                        )                
+                    '''
+            db.execute(query)
+            db.commit()
+
+            query = '''insert into mydata 
+                    values (%s)'''
+
+            db.execute(query, (user_name, ))
+            db.commit()
+
     def stop(self):
-        """Stops the thread and closes the connection."""
         self.running = False
-        self.quit()
-        self.wait()
