@@ -390,3 +390,6 @@ class MainWindow(QWidget):
 #     window = MainWindow()
 #     window.show()
 #     sys.exit(app.exec())
+
+another changes
+git
